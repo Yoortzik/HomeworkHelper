@@ -1,0 +1,123 @@
+package com.example.homeworkhelper;
+
+import android.util.Base64;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public class ApiClient {
+
+    private static final String TAG = "ApiClient";
+    private static final String API_KEY = "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";
+    private static final String API_URL = "https://api.groq.com/openai/v1/chat/completions";
+    private static final String MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
+
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .build();
+
+    public interface Callback {
+        void onSuccess(String response);
+        void onError(String error);
+    }
+
+    /**
+     * Sends the homework image (as base64) to Claude API.
+     * @param imageBytes  Raw bytes of the captured/selected image
+     * @param mimeType    e.g. "image/jpeg" or "image/png"
+     * @param callback    Result callback
+     */
+    public void analyzeHomework(byte[] imageBytes, String mimeType, Callback callback) {
+        String base64Image = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+        String dataUrl = "data:" + mimeType + ";base64," + base64Image;
+
+        new Thread(() -> {
+            try {
+                // Image part
+                JSONObject imageUrlObj = new JSONObject();
+                imageUrlObj.put("url", dataUrl);
+
+                JSONObject imageContent = new JSONObject();
+                imageContent.put("type", "image_url");
+                imageContent.put("image_url", imageUrlObj);
+
+                // Text part
+                JSONObject textContent = new JSONObject();
+                textContent.put("type", "text");
+                textContent.put("text",
+                        "אתה מורה פרטי מומחה. ענה תמיד בעברית בלבד. " +
+                                "1. זהה את המקצוע (מתמטיקה, מדעים, היסטוריה, עברית, אנגלית וכו'). " +
+                                "2. קרא את השאלה בעיון. " +
+                                "3. תן הסבר ברור עם פתרון שלב אחר שלב. " +
+                                "4. התחל את התשובה שלך עם: 'מקצוע: [שם המקצוע]' בשורה הראשונה. " +
+                                "היה מעודד וחינוכי — עזור לתלמיד להבין, לא רק להעתיק."
+                );
+
+                // Combine into content array
+                JSONArray contentArray = new JSONArray();
+                contentArray.put(textContent);
+                contentArray.put(imageContent);
+
+                // Build the message
+                JSONObject message = new JSONObject();
+                message.put("role", "user");
+                message.put("content", contentArray);
+
+                JSONArray messagesArray = new JSONArray();
+                messagesArray.put(message);
+
+                // Build request body
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("model", MODEL);
+                requestBody.put("max_tokens", 1500);
+                requestBody.put("messages", messagesArray);
+
+                // HTTP request
+                RequestBody body = RequestBody.create(
+                        requestBody.toString(),
+                        MediaType.parse("application/json")
+                );
+
+                Request request = new Request.Builder()
+                        .url(API_URL)
+                        .addHeader("Authorization", "Bearer " + API_KEY) // Groq uses Bearer token
+                        .addHeader("Content-Type", "application/json")
+                        .post(body)
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        callback.onError("API error: " + response.code() + " " + response.message());
+                        return;
+                    }
+
+                    String responseString = response.body().string();
+                    JSONObject json = new JSONObject(responseString);
+
+                    // Groq response format is different from Anthropic
+                    String text = json
+                            .getJSONArray("choices")
+                            .getJSONObject(0)
+                            .getJSONObject("message")
+                            .getString("content");
+
+                    callback.onSuccess(text);
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error calling Groq API", e);
+                callback.onError("Error: " + e.getMessage());
+            }
+        }).start();
+    }
+}
