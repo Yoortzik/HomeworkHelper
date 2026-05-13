@@ -63,9 +63,12 @@ public class MainActivity extends AppCompatActivity {
         btnTakePhoto.setOnClickListener(v -> checkCameraPermissionAndCapture());
         btnPickGallery.setOnClickListener(v -> checkStoragePermissionAndPick());
         btnAnalyze.setOnClickListener(v -> analyzeImage());
+        MaterialButton btnHistory = findViewById(R.id.btnHistory);
+        btnHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            startActivity(intent);
+        });
     }
-
-    // ─── Camera ──────────────────────────────────────────────────────────────
 
     private void checkCameraPermissionAndCapture() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -102,8 +105,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ─── Gallery ─────────────────────────────────────────────────────────────
-
     private void checkStoragePermissionAndPick() {
         String permission = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 ? Manifest.permission.READ_MEDIA_IMAGES
@@ -123,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
     }
-
-    // ─── Results ─────────────────────────────────────────────────────────────
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -162,8 +161,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ─── AI Analysis ─────────────────────────────────────────────────────────
-
     private void analyzeImage() {
         if (imageBytes == null) {
             Toast.makeText(this, "Please capture or select an image first", Toast.LENGTH_SHORT).show();
@@ -200,8 +197,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("RESULT_TEXT", result);
         startActivity(intent);
     }
-
-    // ─── Permissions ─────────────────────────────────────────────────────────
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
