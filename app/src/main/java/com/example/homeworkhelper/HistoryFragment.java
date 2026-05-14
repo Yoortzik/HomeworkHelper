@@ -1,45 +1,49 @@
 package com.example.homeworkhelper;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-
 import java.util.ArrayList;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView tvEmpty;
-    private HistoryAdapter adapter;
     private FirestoreManager firestoreManager;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_history, container, false);
 
-        recyclerView    = findViewById(R.id.recyclerView);
-        progressBar     = findViewById(R.id.progressBar);
-        tvEmpty         = findViewById(R.id.tvEmpty);
-        MaterialButton btnBack = findViewById(R.id.btnBack);
-
+        recyclerView     = view.findViewById(R.id.recyclerView);
+        progressBar      = view.findViewById(R.id.progressBar);
+        tvEmpty          = view.findViewById(R.id.tvEmpty);
         firestoreManager = new FirestoreManager();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // הסתר את כפתור החזרה — לא צריך ב-Fragment
+        View btnBack = view.findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setVisibility(View.GONE);
 
-        btnBack.setOnClickListener(v -> finish());
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         loadHistory();
+
+        return view;
     }
 
     private void loadHistory() {
@@ -48,35 +52,32 @@ public class HistoryActivity extends AppCompatActivity {
         firestoreManager.loadHistory(new FirestoreManager.LoadCallback() {
             @Override
             public void onSuccess(java.util.List<HomeworkEntry> entries) {
-                runOnUiThread(() -> {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
-
                     if (entries.isEmpty()) {
                         tvEmpty.setVisibility(View.VISIBLE);
                         return;
                     }
-
-                    // לחיצה על פריט — מציג את התשובה המלאה
-                    adapter = new HistoryAdapter(entries, entry -> {
-                        new AlertDialog.Builder(HistoryActivity.this)
+                    HistoryAdapter adapter = new HistoryAdapter(entries, entry -> {
+                        new AlertDialog.Builder(requireContext())
                                 .setTitle("📚 " + entry.getSubject())
                                 .setMessage(entry.getAnswer())
                                 .setPositiveButton("סגור", null)
-                                .setNegativeButton("מחק", (dialog, which) ->
-                                        deleteEntry(entry))
+                                .setNegativeButton("מחק", (d, w) -> deleteEntry(entry))
                                 .show();
                     });
-
                     recyclerView.setAdapter(adapter);
                 });
             }
 
             @Override
             public void onError(String error) {
-                runOnUiThread(() -> {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(HistoryActivity.this,
-                            "שגיאה בטעינה: " + error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(),
+                            "שגיאה: " + error, Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -86,13 +87,12 @@ public class HistoryActivity extends AppCompatActivity {
         firestoreManager.deleteEntry(entry.getId(), new FirestoreManager.SaveCallback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(HistoryActivity.this, "נמחק בהצלחה", Toast.LENGTH_SHORT).show();
-                loadHistory(); // רענן את הרשימה
+                Toast.makeText(requireContext(), "נמחק בהצלחה", Toast.LENGTH_SHORT).show();
+                loadHistory();
             }
             @Override
             public void onError(String error) {
-                Toast.makeText(HistoryActivity.this,
-                        "שגיאה במחיקה: " + error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "שגיאה במחיקה: " + error, Toast.LENGTH_SHORT).show();
             }
         });
     }

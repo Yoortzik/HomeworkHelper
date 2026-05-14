@@ -2,94 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
-    android:background="#F5F5F5">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/appLogo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@android:drawable/ic_menu_camera"
-        app:tint="#3F51B5"
-        android:layout_marginBottom="16dp"/>
+    <!-- מיכל ה-Fragments -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- ניווט תחתון -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Homework Helper"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="#3F51B5"
-        android:layout_marginBottom="8dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take a photo of your homework and get instant AI help!"
-        android:textSize="14sp"
-        android:textColor="#666666"
-        android:gravity="center"
-        android:layout_marginBottom="40dp"/>
-    <ImageView
-        android:id="@+id/imagePreview"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:background="#DDDDDD"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:layout_marginBottom="24dp"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnTakePhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take Photo"
-        android:textSize="16sp"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="12dp"
-        android:layout_marginBottom="16dp"
-        style="@style/Widget.MaterialComponents.Button"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPickGallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose from Gallery"
-        android:textSize="16sp"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="12dp"
-        android:layout_marginBottom="24dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnHistory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="History"
-        android:textSize="16sp"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="12dp"
-        android:layout_marginBottom="24dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAnalyze"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Analyze Homework"
-        android:textSize="16sp"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="12dp"
-        android:visibility="gone"
-        style="@style/Widget.MaterialComponents.Button"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"/>
+        android:background="#FFFFFF"
+        app:menu="@menu/bottom_nav_menu"
+        xmlns:app="http://schemas.android.com/apk/res-auto"/>
 
 </LinearLayout>

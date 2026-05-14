@@ -17,7 +17,7 @@ import okhttp3.Response;
 public class ApiClient {
 
     private static final String TAG = "ApiClient";
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "";
     private static final String API_URL = "https://api.groq.com/openai/v1/chat/completions";
     private static final String MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
@@ -74,7 +74,7 @@ public class ApiClient {
 
                 Request request = new Request.Builder()
                         .url(API_URL)
-                        .addHeader("Authorization", "Bearer " + API_KEY) // Groq uses Bearer token
+                        .addHeader("Authorization", "Bearer " + API_KEY)
                         .addHeader("Content-Type", "application/json")
                         .post(body)
                         .build();

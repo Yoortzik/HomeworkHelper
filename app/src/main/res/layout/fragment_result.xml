@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#3F51B5"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvSubjectTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📚 מקצוע"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="טוען..."
+            android:textSize="15sp"
+            android:textColor="#212121"
+            android:lineSpacingExtra="4dp"
+            android:background="#FFFFFF"
+            android:padding="16dp"/>
+
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="← נתח שאלה נוספת"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+</LinearLayout>

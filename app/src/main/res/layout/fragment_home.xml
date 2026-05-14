@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#F5F5F5">
+
+    <ImageView
+        android:id="@+id/appLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@android:drawable/ic_menu_camera"
+        app:tint="#3F51B5"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="עוזר שיעורי בית"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#3F51B5"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="צלם את שיעורי הבית וקבל עזרה מיידית!"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_marginBottom="40dp"/>
+
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:background="#DDDDDD"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_marginBottom="24dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📷  צלם תמונה"
+        android:textSize="16sp"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.MaterialComponents.Button"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPickGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🖼️  בחר מהגלריה"
+        android:textSize="16sp"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:layout_marginBottom="24dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAnalyze"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🤖  נתח שיעורי בית"
+        android:textSize="16sp"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:visibility="gone"
+        style="@style/Widget.MaterialComponents.Button"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>
