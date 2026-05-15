@@ -40,8 +40,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         holder.tvSubject.setText("📚 " + entry.getSubject());
         holder.tvAnswer.setText(entry.getAnswer());
-
-        // פורמט תאריך
         if (entry.getTimestamp() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
             holder.tvDate.setText(sdf.format(entry.getTimestamp().toDate()));

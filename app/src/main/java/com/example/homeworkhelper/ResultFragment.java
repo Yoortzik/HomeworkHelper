@@ -16,8 +16,6 @@ import com.google.android.material.button.MaterialButton;
 public class ResultFragment extends Fragment {
 
     private static final String ARG_RESULT = "result_text";
-
-    // Factory method — הדרך הנכונה ליצור Fragment עם נתונים
     public static ResultFragment newInstance(String resultText) {
         ResultFragment fragment = new ResultFragment();
         Bundle args = new Bundle();
@@ -39,8 +37,6 @@ public class ResultFragment extends Fragment {
 
         String resultText = getArguments() != null
                 ? getArguments().getString(ARG_RESULT, "") : "";
-
-        // חילוץ המקצוע
         String subject = "עזרה בשיעורי בית";
         if (resultText.startsWith("מקצוע:")) {
             int newline = resultText.indexOf('\n');
@@ -52,21 +48,31 @@ public class ResultFragment extends Fragment {
 
         tvSubjectTag.setText("📚 " + subject);
         tvResult.setText(resultText);
-
-        // שמירה ל-Firestore
         String finalSubject = subject;
         String finalAnswer  = resultText;
-        FirestoreManager firestoreManager = new FirestoreManager();
-        firestoreManager.saveEntry(finalSubject, "שאלה מהמצלמה", finalAnswer,
-                new FirestoreManager.SaveCallback() {
-                    @Override public void onSuccess() {}
-                    @Override public void onError(String error) {
-                        Toast.makeText(requireContext(),
-                                "שגיאה בשמירה: " + error, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        HomeworkDatabase homeworkDatabase = new HomeworkDatabase();
 
-        // חזרה ל-HomeFragment
+        homeworkDatabase.saveHomework(
+                finalSubject,
+                "שאלה מהמצלמה",
+                finalAnswer,
+                new HomeworkDatabase.DatabaseCallback() {
+
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+
+                        Toast.makeText(
+                                requireContext(),
+                                "שגיאה בשמירה: " + message,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
         btnBack.setOnClickListener(v ->
                 requireActivity().getSupportFragmentManager().popBackStack());
 

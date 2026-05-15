@@ -17,7 +17,7 @@
             android:id="@+id/tvSubjectTag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📚 Subject"
+            android:text="Subject"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"/>
@@ -61,7 +61,7 @@
         android:id="@+id/btnBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="← Analyze Another"
+        android:text="Analyze Another"
         android:layout_margin="16dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 

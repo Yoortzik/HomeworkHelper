@@ -1,8 +1,6 @@
 package com.example.homeworkhelper;
 
 import com.google.firebase.Timestamp;
-
-// מחלקה המייצגת רשומה אחת בהיסטוריה
 public class HomeworkEntry {
 
     private String id;

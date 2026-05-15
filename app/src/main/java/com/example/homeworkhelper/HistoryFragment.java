@@ -22,7 +22,7 @@ public class HistoryFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView tvEmpty;
-    private FirestoreManager firestoreManager;
+    private HomeworkDatabase homeworkDatabase;
 
     @Nullable
     @Override
@@ -34,9 +34,7 @@ public class HistoryFragment extends Fragment {
         recyclerView     = view.findViewById(R.id.recyclerView);
         progressBar      = view.findViewById(R.id.progressBar);
         tvEmpty          = view.findViewById(R.id.tvEmpty);
-        firestoreManager = new FirestoreManager();
-
-        // הסתר את כפתור החזרה — לא צריך ב-Fragment
+        homeworkDatabase = new HomeworkDatabase();
         View btnBack = view.findViewById(R.id.btnBack);
         if (btnBack != null) btnBack.setVisibility(View.GONE);
 
@@ -49,50 +47,57 @@ public class HistoryFragment extends Fragment {
     private void loadHistory() {
         progressBar.setVisibility(View.VISIBLE);
 
-        firestoreManager.loadHistory(new FirestoreManager.LoadCallback() {
+        homeworkDatabase.getHomeworkHistory(new HomeworkDatabase.HistoryCallback() {
+
             @Override
-            public void onSuccess(java.util.List<HomeworkEntry> entries) {
-                if (getActivity() == null) return;
+            public void onLoaded(java.util.List<HomeworkEntry> historyList) {
+
+                if (getActivity() == null) {
+                    return;
+                }
+
                 getActivity().runOnUiThread(() -> {
+
                     progressBar.setVisibility(View.GONE);
-                    if (entries.isEmpty()) {
+
+                    if (historyList.isEmpty()) {
                         tvEmpty.setVisibility(View.VISIBLE);
                         return;
                     }
-                    HistoryAdapter adapter = new HistoryAdapter(entries, entry -> {
+
+                    HistoryAdapter adapter = new HistoryAdapter(historyList, entry -> {
+
                         new AlertDialog.Builder(requireContext())
                                 .setTitle("📚 " + entry.getSubject())
                                 .setMessage(entry.getAnswer())
                                 .setPositiveButton("סגור", null)
-                                .setNegativeButton("מחק", (d, w) -> deleteEntry(entry))
+                                .setNegativeButton("מחק", (dialog, which) -> {
+                                    onFailure(entry.getQuestion());
+                                })
                                 .show();
                     });
+
                     recyclerView.setAdapter(adapter);
                 });
             }
 
             @Override
-            public void onError(String error) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(),
-                            "שגיאה: " + error, Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
+            public void onFailure(String message) {
 
-    private void deleteEntry(HomeworkEntry entry) {
-        firestoreManager.deleteEntry(entry.getId(), new FirestoreManager.SaveCallback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(requireContext(), "נמחק בהצלחה", Toast.LENGTH_SHORT).show();
-                loadHistory();
-            }
-            @Override
-            public void onError(String error) {
-                Toast.makeText(requireContext(), "שגיאה במחיקה: " + error, Toast.LENGTH_SHORT).show();
+                if (getActivity() == null) {
+                    return;
+                }
+
+                getActivity().runOnUiThread(() -> {
+
+                    progressBar.setVisibility(View.GONE);
+
+                    Toast.makeText(
+                            requireContext(),
+                            "שגיאה: " + message,
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
             }
         });
     }

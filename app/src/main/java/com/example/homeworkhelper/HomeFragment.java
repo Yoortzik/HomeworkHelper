@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment {
 
     private void analyzeImage() {
         if (imageBytes == null) {
-            Toast.makeText(requireContext(), "אנא צלם או בחר תמונה תחילה", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "צלם או בחר תמונה", Toast.LENGTH_SHORT).show();
             return;
         }
 
